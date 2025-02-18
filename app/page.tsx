@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <div>
@@ -5,10 +7,29 @@ export default function Home() {
         <div>
           <div className="flex flex-col">
             <h1 className="text-4xl md:text-5xl font-bold text-center">
-              Prenez le contrôle <br />de vos finances
+              Prenez le contrôle <br />
+              de vos finances
             </h1>
 
-            <p className="py-6 text-base-800 text-center">Suivez vos budgets et dépenses <br /> en toute simplicité avec notre application.</p>
+            <p className="py-6 text-base-800 text-center">
+              Suivez vos budgets et dépenses <br /> en toute simplicité avec
+              notre application.
+            </p>
+
+            <div className="flex justify-center">
+              <Link
+                href={""}
+                className="btn btn-sm md:btn-md btn-outline btn-accent rounded-full"
+              >
+                Se connecter
+              </Link>
+              <Link
+                href={""}
+                className="btn btn-sm md:btn-md ml-2 btn-accent rounded-full"
+              >
+                S'inscrire
+              </Link>
+            </div>
           </div>
         </div>
       </div>
