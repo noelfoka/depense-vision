@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 
 export default function Home() {
@@ -18,13 +19,13 @@ export default function Home() {
 
             <div className="flex justify-center">
               <Link
-                href={""}
+                href={"/sign-in"}
                 className="btn btn-sm md:btn-md btn-outline btn-accent rounded-full"
               >
                 Se connecter
               </Link>
               <Link
-                href={""}
+                href={"/sign-up"}
                 className="btn btn-sm md:btn-md ml-2 btn-accent rounded-full"
               >
                 S'inscrire
