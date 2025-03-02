@@ -1,9 +1,9 @@
 "use client";
 import Link from "next/link";
-
 export default function Home() {
   return (
     <div>
+
       <div className="flex items-center justify-center flex-col py-10 w-full">
         <div>
           <div className="flex flex-col">
@@ -28,7 +28,7 @@ export default function Home() {
                 href={"/sign-up"}
                 className="btn btn-sm md:btn-md ml-2 btn-accent rounded-full"
               >
-                S'inscrire
+                S&apos;inscrire
               </Link>
             </div>
           </div>
