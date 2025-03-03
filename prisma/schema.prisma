@@ -27,3 +27,13 @@ model Budget {
   transactions             Transaction[]
   createdAt                DateTime @default(now())
 }
+
+model Transaction {
+  id                       String   @id @default(uuid())
+  description              String
+  amount                   Float
+  budgetId                 String?
+  budget                   Budget?  @relation(fields: [budgetId], references: [id])
+  emoji                    String?
+  createdAt                DateTime @default(now())
+}
