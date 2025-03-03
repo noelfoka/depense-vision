@@ -3,7 +3,7 @@ import React from "react";
 import { UserButton, useUser } from "@clerk/nextjs";
 import Link from "next/link";
 const Navbar = () => {
-  const { isLoaded, isSignedIn, user } = useUser();
+  const { isLoaded, isSignedIn } = useUser();
 
   return (
     <div className="bg-base-200/30 px-5 md:px-[10%] py-4">
