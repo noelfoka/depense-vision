@@ -14,5 +14,16 @@ model User {
   id                       String   @id @default(uuid())
   email                    String   @unique
   createdAt                DateTime @default(now())
-  budget                   Budget[]
+  budgets                   Budget[]
+}
+
+model Budget {
+  id                       String   @id @default(uuid())
+  name                     String
+  amount                   Float
+  userId                   String
+  user                     User     @relation(fields: [userId], references: [id])
+  emoji                    String?
+  transactions             Transaction[]
+  createdAt                DateTime @default(now())
 }
