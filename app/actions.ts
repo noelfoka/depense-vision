@@ -23,6 +23,9 @@ export const checkAndAddUser = async (email: string | undefined) => {
           email: email
         }
       })
+      console.log("Nouvel utilisateur ajouté dans la base de données")
+    } else {
+      console.log("Utilisateur déjà existant dans la base de données")
     }
       
   } catch (error) {
