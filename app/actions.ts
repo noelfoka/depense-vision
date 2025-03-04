@@ -14,6 +14,16 @@ export const checkAndAddUser = async (email: string | undefined) => {
         email: email
       }
     })
+
+    // Si l'utilisateur n'existe pas
+    if(!existingUser) {
+      // Ajouter l'utilisateur dans la base de données
+      await prisma.user.create({
+        data: {
+          email: email
+        }
+      })
+    }
       
   } catch (error) {
     console.error("Erreur lors de la vérification et ajout de l'utilisateur", error)
