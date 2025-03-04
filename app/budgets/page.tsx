@@ -1,8 +1,10 @@
 "use client"
 
+import Navbar from "../components/Navbar"
+
 const Page = () => {
   return (
-    <div>Page Budgets</div>
+    <Navbar />
   )
 }
 
