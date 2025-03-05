@@ -41,6 +41,11 @@ export const addBudget = async (email: string, name: string, amount: number, sel
         email: email
       }
     })
+
+    // Si l'utilisateur n'existe pas
+    if(!user) {
+      throw new Error("Utilisateur non trouvé")
+    }
     
   } catch (error) {
     console.error("Erreur lors de l'ajout du budget", error)
