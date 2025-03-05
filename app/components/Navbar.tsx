@@ -25,13 +25,13 @@ const Navbar = () => {
               </div>
 
               <div className="md:flex hidden">
-                <Link href={""} className="btn">
+                <Link href={"/budgets"} className="btn">
                   Mes budgets
                 </Link>
-                <Link href={""} className="btn mx-4">
+                <Link href={"/dashboard"} className="btn mx-4">
                   Tableau de bord
                 </Link>
-                <Link href={""} className="btn">
+                <Link href={"/transactions"} className="btn">
                   Mes transactions
                 </Link>
               </div>
@@ -41,13 +41,13 @@ const Navbar = () => {
 
             {/* pour les petits écrans */}
             <div className="flex md:hidden mt-2 justify-center">
-              <Link href={""} className="btn btn-sm">
+              <Link href={"/budgets"} className="btn btn-sm">
                 Mes budgets
               </Link>
-              <Link href={""} className="btn btn-sm mx-4">
+              <Link href={"/dashboard"} className="btn btn-sm mx-4">
                 Tableau de bord
               </Link>
-              <Link href={""} className="btn btn-sm">
+              <Link href={"/transactions"} className="btn btn-sm">
                 Mes transactions
               </Link>
             </div>

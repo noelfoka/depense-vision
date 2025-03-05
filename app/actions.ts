@@ -31,3 +31,19 @@ export const checkAndAddUser = async (email: string | undefined) => {
     console.error("Erreur lors de la vérification et ajout de l'utilisateur", error)
   }
 }
+
+// Action pour ajouter des budgets dans la base de données
+export const addBudget = async (email: string, name: string, amount: number, selectedEmoji: string) => {
+  try {
+    // recupere l'utilisateur dans la base de données en fonction de l'email
+    const user = await prisma.user.findUnique({
+      where: {
+        email: email
+      }
+    })
+    
+  } catch (error) {
+    console.error("Erreur lors de l'ajout du budget", error)
+    throw error
+  }
+}

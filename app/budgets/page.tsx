@@ -1,10 +1,12 @@
 "use client"
 
-import Navbar from "../components/Navbar"
+import Wrapper from "../components/Wrapper"
 
 const Page = () => {
   return (
-    <Navbar />
+    <Wrapper>
+      <div>Page Budgets</div>
+    </Wrapper>
   )
 }
 
