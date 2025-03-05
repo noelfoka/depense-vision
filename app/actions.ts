@@ -46,6 +46,18 @@ export const addBudget = async (email: string, name: string, amount: number, sel
     if(!user) {
       throw new Error("Utilisateur non trouvé")
     }
+
+    // Ajouter le budget dans la base de données
+    await prisma.budget.create({
+      data: {
+        name,
+        amount,
+        emoji: selectedEmoji,
+        userId: user.id
+      }
+    })
+
+    console.log("Budget ajouté avec succès")
     
   } catch (error) {
     console.error("Erreur lors de l'ajout du budget", error)
