@@ -17,12 +17,12 @@ const Page = () => {
 
   const closeNotification = () => {
     setNotification("");
-  }
+  };
 
-  const handleEmojiSelect = (emojiObject: {emoji: string}) => {
+  const handleEmojiSelect = (emojiObject: { emoji: string }) => {
     setSelectedEmoji(emojiObject.emoji);
     setShowEmojiPicker(false);
-  }
+  };
 
   const handleAddBudget = async () => {
     try {
@@ -38,7 +38,7 @@ const Page = () => {
         budgetName,
         amount,
         selectedEmoji
-      )
+      );
 
       const modal = document.getElementById("my_modal_3") as HTMLDialogElement;
       if (modal) {
@@ -50,19 +50,16 @@ const Page = () => {
       setBudgetName("");
       setBudgetAmount("0");
       setSelectedEmoji("");
+      setShowEmojiPicker(false);
     } catch (error) {
-      console.log(error);
+      setNotification(`Une erreur est survenue: ${error}`);
     }
-  }
+  };
 
   return (
     <Wrapper>
-
       {notification && (
-        <Notification
-          message={notification}
-          onClose={closeNotification}
-        />
+        <Notification message={notification} onClose={closeNotification} />
       )}
 
       <button
@@ -105,7 +102,10 @@ const Page = () => {
               className="input input-bordered mb-3"
             />
 
-            <button className="btn btn-outline mb-3" onClick={() => setShowEmojiPicker(!showEmojiPicker)}>
+            <button
+              className="btn btn-outline mb-3"
+              onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+            >
               {selectedEmoji || "Selectioner un emoji"}
             </button>
 
@@ -114,7 +114,9 @@ const Page = () => {
                 <EmojiPicker onEmojiClick={handleEmojiSelect} />
               </div>
             )}
-            <button onClick={handleAddBudget} className="btn">Ajouter Budget</button>
+            <button onClick={handleAddBudget} className="btn">
+              Ajouter Budget
+            </button>
           </div>
         </div>
       </dialog>
