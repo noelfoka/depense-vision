@@ -100,6 +100,7 @@ const Page = () => {
               placeholder="Montant du budget"
               onChange={(e) => setBudgetAmount(e.target.value)}
               className="input input-bordered mb-3"
+              required
             />
 
             <button

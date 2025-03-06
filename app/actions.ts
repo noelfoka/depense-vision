@@ -64,3 +64,32 @@ export const addBudget = async (email: string, name: string, amount: number, sel
     throw error
   }
 }
+
+// Action pour récupérer les budgets d'un utilisateur
+export async function getBudgetsByUser (email: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email
+      },
+      include: {
+        budgets: {
+          include: {
+            transactions: true
+          }
+        }
+      }
+    })
+
+    // Vérifier si l'utilisateur existe
+    if (!user) {
+      throw new Error("Utilisateur non trouvé")
+    }
+
+    return user.budgets
+
+  } catch (error) {
+    console.error("Erreur lors de la récupération des budgets", error)
+    throw error
+  }
+}
