@@ -1,6 +1,8 @@
 "use client";
 import Link from "next/link";
 import Navbar from "./components/Navbar";
+import BudgetItem from "./components/BudgetItem";
+import budgets from "./data";
 export default function Home() {
   return (
     <div>
@@ -32,6 +34,14 @@ export default function Home() {
                 S&apos;inscrire
               </Link>
             </div>
+
+            <ul className="grid md:grid-cols-3 gap-4 mt-10 min-w-[1300px]">
+              {budgets.map((budget) => (
+                <Link href={``} key={budget.id}>
+                  <BudgetItem budget={budget} enableHover={1} />
+                </Link>
+              ))}
+            </ul>
           </div>
         </div>
       </div>

@@ -2,10 +2,14 @@
 
 import { useUser } from "@clerk/nextjs";
 import Wrapper from "../components/Wrapper";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EmojiPicker from "emoji-picker-react";
-import { addBudget } from "../actions";
+import { addBudget, getBudgetsByUser } from "../actions";
 import Notification from "../components/Notification";
+import { Budget } from "@/type";
+import Link from "next/link";
+import BudgetItem from "../components/BudgetItem";
+import { Landmark } from "lucide-react";
 
 const Page = () => {
   const { user } = useUser();
@@ -14,6 +18,7 @@ const Page = () => {
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
   const [selectedEmoji, setSelectedEmoji] = useState<string>("");
   const [notification, setNotification] = useState<string>("");
+  const [budgets, setBudgets] = useState<Budget[]>([]);
 
   const closeNotification = () => {
     setNotification("");
@@ -40,6 +45,8 @@ const Page = () => {
         selectedEmoji
       );
 
+      fetchBudgets();
+
       const modal = document.getElementById("my_modal_3") as HTMLDialogElement;
       if (modal) {
         modal.close();
@@ -56,6 +63,23 @@ const Page = () => {
     }
   };
 
+  const fetchBudgets = async () => {
+    if (user?.primaryEmailAddress?.emailAddress) {
+      try {
+        const userBudgets = await getBudgetsByUser(user?.primaryEmailAddress?.emailAddress)
+
+        setBudgets(userBudgets as Budget[])
+      } catch (error) {
+        setNotification(`Une erreur est survenue: ${error}`)
+        console.error("Erreur lors de la récupération des budgets", error)
+      }
+    }
+  }
+
+  useEffect(() => {
+    fetchBudgets()
+  }, [user?.primaryEmailAddress?.emailAddress])
+
   return (
     <Wrapper>
       {notification && (
@@ -71,7 +95,9 @@ const Page = () => {
         }
       >
         Nouveau budget
+        <Landmark className="w-4" />
       </button>
+
       <dialog id="my_modal_3" className="modal">
         <div className="modal-box">
           <form method="dialog">
@@ -121,6 +147,15 @@ const Page = () => {
           </div>
         </div>
       </dialog>
+
+      <ul className="grid md:grid-cols-3 gap-4 mt-10">
+        {budgets.map((budget) => (
+          <Link href={`/manage/${budget.id}`} key={budget.id}>
+            <BudgetItem budget={budget} enableHover={1} />
+          </Link>
+        ))}
+      </ul>
+
     </Wrapper>
   );
 };
