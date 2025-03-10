@@ -2,6 +2,8 @@
 
 import {
   addTransactionToBudget,
+  deleteBudget,
+  deleteTransaction,
   getTransactionsByBudgetId,
 } from "@/app/actions";
 import BudgetItem from "@/app/components/BudgetItem";
@@ -9,6 +11,7 @@ import Notification from "@/app/components/Notification";
 import Wrapper from "@/app/components/Wrapper";
 import { Budget } from "@/type";
 import { Send, Trash } from "lucide-react";
+import { redirect } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const Page = ({ params }: { params: Promise<{ budgetId: string }> }) => {
@@ -76,6 +79,41 @@ const Page = ({ params }: { params: Promise<{ budgetId: string }> }) => {
     }
   };
 
+  const handleDeleteBudget = async () => {
+    const confirmed = window.confirm(
+      "Etes-vous sûr de vouloir suprimer ce budget et toutes ses transactions?"
+    );
+
+    if (confirmed) {
+      try {
+        await deleteBudget(budgetId);
+      } catch (error) {
+        throw new Error(
+          `Erreur lors de la supression du budget et de ses transactions ${error}`
+        );
+      }
+      redirect("/budgets");
+    }
+  };
+
+  const handleDeleteTransaction = async (transactionId: string) => {
+    const confirmed = window.confirm(
+      "Etes-vous sûr de vouloir suprimer cette transaction?"
+    );
+
+    if (confirmed) {
+      try {
+        await deleteTransaction(transactionId);
+        fetBudgetData(budgetId);
+        setNotification("Transaction suprimée avec succès");
+      } catch (error) {
+        throw new Error(
+          `Erreur lors de la supression de la transactions ${error}`
+        );
+      }
+    }
+  }
+
   return (
     <Wrapper>
       {notification && (
@@ -89,7 +127,9 @@ const Page = ({ params }: { params: Promise<{ budgetId: string }> }) => {
         <div className="flex flex-col md:flex-row">
           <div className="md:w-1/3">
             <BudgetItem budget={budget} enableHover={0} />
-            <button className="btn mt-4">Suprimer le budget</button>
+            <button className="btn mt-4" onClick={() => handleDeleteBudget()}>
+              Suprimer le budget
+            </button>
             <div className="space-y-4 flex flex-col mt-4">
               <input
                 type="text"
@@ -137,17 +177,27 @@ const Page = ({ params }: { params: Promise<{ budgetId: string }> }) => {
                 <tbody>
                   {budget.transactions.map((transaction) => (
                     <tr key={transaction.id}>
-                      <td className="text-lg md:text-3xl">{transaction.emoji}</td>
-                      <td><div className="badge badge-accent md:badge-sm badge-xs">- {transaction.amount} FCFA</div></td>
-                      <td>{transaction.description}</td>
-                      <td>{transaction.createdAt.toLocaleDateString("fr-FR")}</td>
-                      <td>{transaction.createdAt.toLocaleTimeString("fr-FR", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        second: "2-digit"
-                      })}</td>
+                      <td className="text-lg md:text-3xl">
+                        {transaction.emoji}
+                      </td>
                       <td>
-                        <button className="btn btn-sm">
+                        <div className="badge badge-accent md:badge-sm badge-xs">
+                          - {transaction.amount} FCFA
+                        </div>
+                      </td>
+                      <td>{transaction.description}</td>
+                      <td>
+                        {transaction.createdAt.toLocaleDateString("fr-FR")}
+                      </td>
+                      <td>
+                        {transaction.createdAt.toLocaleTimeString("fr-FR", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                          second: "2-digit",
+                        })}
+                      </td>
+                      <td>
+                        <button className="btn btn-sm" onClick={() => handleDeleteTransaction(transaction.id)}>
                           <Trash className="w-4" />
                         </button>
                       </td>
