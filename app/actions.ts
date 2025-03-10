@@ -204,6 +204,17 @@ export async function deleteTransaction(transactionId: string) {
         id: transactionId
       }
     })
+
+    if (!transaction) {
+      throw new Error("Transaction non trouvée!")
+    }
+
+    await prisma.transaction.delete({
+      where: {
+        id: transactionId
+      }
+    })
+
   } catch (error) {
     console.error("Erreur lors de la supression de la transaction", error)
     throw error
