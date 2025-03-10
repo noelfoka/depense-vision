@@ -130,7 +130,45 @@ export async function addTransactionToBudget(
   description: string
 ) {
   try {
-    
+    const budget = await prisma.budget.findUnique({
+      where: {
+        id: budgetId
+      },
+      include: {
+        transactions: true
+      }
+    })
+
+    if (!budget) {
+      throw new Error("Budget non trouvé");
+    }
+
+    // Calculer le total des transactions existantes pour ce budget
+    const totalTransactions = budget.transactions.reduce((sum, transaction) => {
+      return sum + transaction.amount
+    }, 0);
+
+    const totalWhithNewTransaction = totalTransactions + amount;
+
+    if(totalWhithNewTransaction > budget.amount) {
+      throw new Error("Le montant total des transaction dépassent le montant du budget")
+    }
+
+    const newTransaction = await prisma.transaction.create({
+      data: {
+        amount,
+        description,
+        emoji: budget.emoji,
+        budget: {
+          connect: {
+            id: budget.id
+          }
+        }
+      }
+    });
+
+    return newTransaction;
+
   } catch (error) {
     console.error("Erreur lors de l'ajout d'une tranction", error)
     throw error
