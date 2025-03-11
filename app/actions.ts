@@ -301,3 +301,20 @@ export async function getTransactionsByEmailAndPeriod(
 }
 
 // Dashboard
+export async function getTotalTransactionAmount(email: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {email},
+      include: {
+        budgets: {
+          include: {
+            transactions: true
+          }
+        }
+      }
+    });
+  } catch (error) {
+    console.error("Erreur lors du calcul total des transactions" , error);
+    throw error
+  }
+}
