@@ -8,12 +8,12 @@ export type Budget = {
 }
 
 export type Transaction = {
-  id: string;
+  id?: string;
   amount: number;
   emoji: string | null;
   description: string;
   budgetName?: string;
-  budgetId?: string;
+  budgetId?: string | null;
   createdAt: Date;
 }
 

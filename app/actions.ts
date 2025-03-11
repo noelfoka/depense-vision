@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/prisma";
 
+
 // Vérifier si un utilisateur existe dans la base de données sinon l'ajouter
 export const checkAndAddUser = async (email: string | undefined) => {
   if (!email) return;
@@ -132,12 +133,12 @@ export async function addTransactionToBudget(
   try {
     const budget = await prisma.budget.findUnique({
       where: {
-        id: budgetId
+        id: budgetId,
       },
       include: {
-        transactions: true
-      }
-    })
+        transactions: true,
+      },
+    });
 
     if (!budget) {
       throw new Error("Budget non trouvé");
@@ -145,13 +146,15 @@ export async function addTransactionToBudget(
 
     // Calculer le total des transactions existantes pour ce budget
     const totalTransactions = budget.transactions.reduce((sum, transaction) => {
-      return sum + transaction.amount
+      return sum + transaction.amount;
     }, 0);
 
     const totalWhithNewTransaction = totalTransactions + amount;
 
-    if(totalWhithNewTransaction > budget.amount) {
-      throw new Error("Le montant total des transaction dépassent le montant du budget")
+    if (totalWhithNewTransaction > budget.amount) {
+      throw new Error(
+        "Le montant total des transaction dépassent le montant du budget"
+      );
     }
 
     const newTransaction = await prisma.transaction.create({
@@ -161,17 +164,16 @@ export async function addTransactionToBudget(
         emoji: budget.emoji,
         budget: {
           connect: {
-            id: budget.id
-          }
-        }
-      }
+            id: budget.id,
+          },
+        },
+      },
     });
 
     return newTransaction;
-
   } catch (error) {
-    console.error("Erreur lors de l'ajout d'une tranction", error)
-    throw error
+    console.error("Erreur lors de l'ajout d'une tranction", error);
+    throw error;
   }
 }
 
@@ -180,18 +182,21 @@ export async function deleteBudget(budgetId: string) {
   try {
     await prisma.transaction.deleteMany({
       where: {
-        budgetId
-      }
-    })
+        budgetId,
+      },
+    });
 
     await prisma.budget.delete({
       where: {
-        id: budgetId
-      }
-    })
+        id: budgetId,
+      },
+    });
   } catch (error) {
-    console.error("Erreur lors de la supression de budget et de ses transactions", error)
-    throw error
+    console.error(
+      "Erreur lors de la supression de budget et de ses transactions",
+      error
+    );
+    throw error;
   }
 }
 
@@ -201,22 +206,98 @@ export async function deleteTransaction(transactionId: string) {
   try {
     const transaction = await prisma.transaction.findUnique({
       where: {
-        id: transactionId
-      }
-    })
+        id: transactionId,
+      },
+    });
 
     if (!transaction) {
-      throw new Error("Transaction non trouvée!")
+      throw new Error("Transaction non trouvée!");
     }
 
     await prisma.transaction.delete({
       where: {
-        id: transactionId
-      }
-    })
-
+        id: transactionId,
+      },
+    });
   } catch (error) {
-    console.error("Erreur lors de la supression de la transaction", error)
-    throw error
+    console.error("Erreur lors de la supression de la transaction", error);
+    throw error;
   }
 }
+
+// Action pour récupérer la liste des transaction selon une période
+export async function getTransactionsByEmailAndPeriod(
+  email: string,
+  period: string
+) {
+  try {
+
+    const now = new Date();
+
+    let dateLimit;
+
+    switch (period) {
+      case "last30":
+        dateLimit = new Date(now);
+        dateLimit.setDate(now.getDate() - 30);
+        break;
+      case "last90":
+        dateLimit = new Date(now);
+        dateLimit.setDate(now.getDate() - 90);
+        break;
+      case "last7":
+        dateLimit = new Date(now);
+        dateLimit.setDate(now.getDate() - 7);
+        break;
+      case "last365":
+        dateLimit = new Date(now);
+        dateLimit.setFullYear(now.getFullYear() - 1);
+        break;
+      default:
+        throw new Error("Période invalide");
+    }
+
+    // Récupérer l'utilisateur par l'email
+    const user = await prisma.user.findUnique({
+      where: {
+        email
+      },
+      include: {
+        budgets: {
+          include: {
+            transactions: {
+              where: {
+                createdAt: {
+                  gte: dateLimit
+                }
+              },
+              orderBy: {
+                createdAt: "desc"
+              }
+            }
+          }
+        }
+      }
+    });
+
+    if (!user) {
+      throw new Error("Utilisateur non trouvé");
+    }
+
+    const transactions = user.budgets.flatMap(budget => 
+      budget.transactions.map(transaction => ({
+        ...transaction,
+        budgetName: budget.name,
+        budgetId: budget.id
+      }))
+    )
+
+    return transactions
+
+  } catch (error) {
+    console.error("Erreur lors de la recuperation des transactions", error);
+    throw error;
+  }
+}
+
+// Dashboard
